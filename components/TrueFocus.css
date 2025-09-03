@@ -1,0 +1,56 @@
+.focus-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em 0.5em; /* vertical horizontal */
+  padding: 1rem;
+  user-select: none;
+  /* Match the font style of the original h1 */
+  font-size: 2.25rem; /* text-4xl */
+  line-height: 2.5rem;
+  font-weight: 700;
+  min-height: 100px; /* Prevent layout shift while calculating */
+}
+
+@media (min-width: 640px) { /* sm */
+  .focus-container {
+    font-size: 3rem; /* text-5xl */
+    line-height: 1;
+  }
+}
+
+@media (min-width: 768px) { /* md */
+  .focus-container {
+    font-size: 3.75rem; /* text-6xl */
+    line-height: 1;
+  }
+}
+
+.focus-word {
+  color: #1f2937; /* text-gray-800 */
+}
+
+.dark .focus-word {
+    color: white;
+}
+
+.focus-word.manual {
+    cursor: pointer;
+}
+
+.focus-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 0 15px 3px var(--glow-color), 0 0 5px 1px var(--glow-color) inset;
+  border-radius: 8px;
+  padding: 0.25rem; /* Add some padding to the frame */
+}
+
+.focus-frame .corner {
+  display: none; /* Corners are decorative, the frame itself is sufficient */
+}
