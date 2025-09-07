@@ -65,7 +65,7 @@ const LeadForm: React.FC = () => {
       // --- End Webhook Integration ---
 
     } catch (err) {
-      setError('Failed to generate leads. Please check your input or try again later.');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred. Please try again.');
       console.error(err);
     } finally {
       setLoading(false);

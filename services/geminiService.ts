@@ -1,9 +1,20 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { Lead } from '../types';
 
-// The API key is expected to be available in the environment.
-// Initializing the client directly as per the guidelines.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Lazily initialize the AI client to prevent the app from crashing on load
+// if the API key environment variable is not set.
+let ai: GoogleGenAI | null = null;
+
+const getAiClient = (): GoogleGenAI => {
+    if (!ai) {
+        // The API key is expected to be available in the environment.
+        // This will throw an error if the API key is not set, but it will
+        // happen during form submission instead of on app load.
+        ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    }
+    return ai;
+};
+
 
 const leadsSchema = {
     type: Type.OBJECT,
@@ -48,7 +59,8 @@ export const generateLeads = async (lookingFor: string, location: string): Promi
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const geminiClient = getAiClient();
+    const response = await geminiClient.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
       config: {
@@ -71,6 +83,10 @@ export const generateLeads = async (lookingFor: string, location: string): Promi
 
   } catch (error) {
     console.error("Error generating leads from Gemini API:", error);
+    // Provide a more helpful error message for the missing API key case.
+    if (error instanceof Error && error.message.includes("API Key")) {
+        throw new Error("AI service not configured: API Key is missing.");
+    }
     // Re-throw the error to be handled by the calling component
     throw new Error("The AI service failed to generate leads.");
   }
