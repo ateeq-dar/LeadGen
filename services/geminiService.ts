@@ -1,93 +1,49 @@
-import { GoogleGenAI, Type } from "@google/genai";
 import type { Lead } from '../types';
 
-// Lazily initialize the AI client to prevent the app from crashing on load
-// if the API key environment variable is not set.
-let ai: GoogleGenAI | null = null;
-
-const getAiClient = (): GoogleGenAI => {
-    if (!ai) {
-        // The API key is expected to be available in the environment.
-        // This will throw an error if the API key is not set, but it will
-        // happen during form submission instead of on app load.
-        ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    }
-    return ai;
-};
-
-
-const leadsSchema = {
-    type: Type.OBJECT,
-    properties: {
-        leads: {
-            type: Type.ARRAY,
-            description: "A list of potential Instagram leads.",
-            items: {
-                type: Type.OBJECT,
-                properties: {
-                    username: {
-                        type: Type.STRING,
-                        description: "A creative and realistic Instagram username for the lead. Should not include the '@' symbol."
-                    },
-                    profileDescription: {
-                        type: Type.STRING,
-                        description: "A brief, realistic bio or profile description for this user."
-                    },
-                    reasoning: {
-                        type: Type.STRING,
-                        description: "A short, compelling reason why this profile is a good lead based on the user's criteria."
-                    }
-                },
-                required: ["username", "profileDescription", "reasoning"]
-            }
-        }
+// A predefined list of mock leads to be used for demonstration purposes.
+// This replaces the live call to the Gemini API.
+const mockLeads: Lead[] = [
+    {
+      username: "wanderlust_jane",
+      profileDescription: "Digital nomad exploring the world one city at a time. Coffee lover. 📍Currently in Lisbon.",
+      reasoning: "Matches location criteria and has a profile focused on travel, aligning with the user's search."
     },
-    required: ["leads"]
-};
+    {
+      username: "techie_tom_dev",
+      profileDescription: "Software Engineer passionate about AI and building cool stuff. Cat dad.",
+      reasoning: "Strong technology focus, likely interested in new software and tech-related products."
+    },
+    {
+      username: "foodie_sarah_sf",
+      profileDescription: "Bay Area food blogger on a mission to find the best tacos. 🌮 Follow my culinary adventures!",
+      reasoning: "Perfect for food/restaurant promotions in the specified location."
+    },
+    {
+      username: "fit_freddy_coach",
+      profileDescription: "Fitness coach & personal trainer. Helping you become the best version of yourself. DM for plans.",
+      reasoning: "Directly aligns with health and fitness-related searches, clearly a professional in the space."
+    },
+    {
+      username: "artisan_ally_creates",
+      profileDescription: "Creator of handmade pottery & ceramics. ✨ Each piece tells a story. Shop link in bio!",
+      reasoning: "Ideal for collaborations with brands targeting artists, crafters, and small business owners."
+    }
+];
 
+/**
+ * Simulates generating leads without calling an external API.
+ * This function returns a hardcoded list of leads after a brief delay
+ * to mimic a real network request.
+ * @param lookingFor - The type of user being searched for (ignored in this mock).
+ * @param location - The location for the search (ignored in this mock).
+ * @returns A promise that resolves to an array of Lead objects.
+ */
 export const generateLeads = async (lookingFor: string, location: string): Promise<Lead[]> => {
-  const prompt = `
-    Act as an expert lead generation specialist for Instagram.
-    Based on the following criteria, generate a list of 5 diverse and high-quality potential user profiles that would be excellent leads.
+  console.log(`Simulating lead generation for: "${lookingFor}" in "${location}"`);
 
-    Criteria:
-    - Looking for: "${lookingFor}"
-    - Location: "${location}"
-
-    For each lead, provide a potential username, a brief but realistic profile description, and a short reason why they are a good match.
-    The response must be in a JSON format.
-  `;
-
-  try {
-    const geminiClient = getAiClient();
-    const response = await geminiClient.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: leadsSchema,
-        temperature: 0.8,
-        topP: 0.9,
-      },
-    });
-    
-    const jsonText = response.text.trim();
-    const parsed = JSON.parse(jsonText);
-
-    if (parsed && parsed.leads && Array.isArray(parsed.leads)) {
-      return parsed.leads;
-    } else {
-      console.error("Unexpected JSON structure:", parsed);
-      throw new Error("Failed to parse leads from AI response.");
-    }
-
-  } catch (error) {
-    console.error("Error generating leads from Gemini API:", error);
-    // Provide a more helpful error message for the missing API key case.
-    if (error instanceof Error && error.message.includes("API Key")) {
-        throw new Error("The AI service is currently unavailable. Please try again later.");
-    }
-    // Re-throw the error to be handled by the calling component
-    throw new Error("The AI service failed to generate leads.");
-  }
+  // Simulate network delay to make the loading animation visible.
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
+  // Return the mock leads.
+  return mockLeads;
 };
