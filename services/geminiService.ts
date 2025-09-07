@@ -85,7 +85,7 @@ export const generateLeads = async (lookingFor: string, location: string): Promi
     console.error("Error generating leads from Gemini API:", error);
     // Provide a more helpful error message for the missing API key case.
     if (error instanceof Error && error.message.includes("API Key")) {
-        throw new Error("AI service not configured: API Key is missing.");
+        throw new Error("The AI service is currently unavailable. Please try again later.");
     }
     // Re-throw the error to be handled by the calling component
     throw new Error("The AI service failed to generate leads.");
