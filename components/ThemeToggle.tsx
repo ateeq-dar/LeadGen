@@ -31,7 +31,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, toggleTheme }) => {
   return (
     <button
       onClick={toggleTheme}
-      className="absolute top-4 right-4 p-2 rounded-full bg-gray-200/50 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 hover:bg-gray-300/50 dark:hover:bg-gray-600/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 focus:ring-indigo-500"
+      className="p-2 rounded-full bg-gray-200/50 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 hover:bg-gray-300/50 dark:hover:bg-gray-600/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       aria-label="Toggle theme"
     >
       <div className="relative w-6 h-6 flex items-center justify-center">
